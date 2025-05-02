@@ -4,6 +4,7 @@ import {
   Body,
   Request,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
@@ -13,10 +14,17 @@ import { AuthGuard } from '@nestjs/passport';
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
+  // ✅ POST /recipes - Create recipe
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  @UseGuards(AuthGuard('jwt')) // ✅ protect with JWT
   async createRecipe(@Request() req, @Body() dto: CreateRecipeDto) {
-    // req.user is injected by JWT Strategy
     return this.recipesService.create(req.user.userId, dto);
+  }
+
+  // ✅ GET /recipes - Get all recipes of logged-in user
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  async getUserRecipes(@Request() req) {
+    return this.recipesService.findAllForUser(req.user.userId);
   }
 }

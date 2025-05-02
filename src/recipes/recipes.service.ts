@@ -14,16 +14,20 @@ export class RecipesService {
 
   async create(userId: number, dto: CreateRecipeDto): Promise<Recipe> {
     const user = await this.userRepo.findOne({ where: { id: userId } });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
+    if (!user) throw new NotFoundException('User not found');
+  
     const recipe = this.recipeRepo.create({
       ...dto,
       postedBy: user,
     });
-
     return this.recipeRepo.save(recipe);
+  }
+  
+  async findAllForUser(userId: number): Promise<Recipe[]> {
+    return this.recipeRepo.find({
+      where: { postedBy: { id: userId } },
+      relations: ['postedBy'],
+      order: { postedAt: 'DESC' },
+    });
   }
 }
