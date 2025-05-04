@@ -13,7 +13,7 @@ import { User } from './auth/entities/user.entity';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'yourpassword', // replace with actual password
+      password: 'postgres', // replace with actual password
       database: 'cookbook',
       autoLoadEntities: true,
       synchronize: true,
